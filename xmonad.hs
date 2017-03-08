@@ -21,7 +21,7 @@ myManageHook = composeAll
    [ appName =? "outlook.office.com__owa" --> doShift "1:comm"
    , appName =? "bazaarvoice.hipchat.com__chat" --> doShift "1:comm"
    , title =? "Signal" --> doShift "1:comm"
-   , appName =? "open.spotify.com" --> doShift "=:music"
+   , appName =? "spotify" --> doShift "=:music"
    , manageDocks
    ]
 
@@ -33,7 +33,7 @@ startupStuff = do
     runOrRaise "outlook-mail" (title =? "Mail - John.Roesler@bazaarvoice.com")
     runOrRaise "hipchat" (appName =? "bazaarvoice.hipchat.com__chat")
     runOrRaise "signal" (title =? "Signal")
-    runOrRaise "spotify" (appName =? "open.spotify.com")
+    runOrRaise "spotify" (appName =? "spotify")
 
 startupStuff2 = setWMName "LG3D"
 
@@ -85,5 +85,5 @@ main = do
         `additionalKeysP`
         [ ("<XF86AudioRaiseVolume>", raiseVolume 2 >>= alert)
         , ("<XF86AudioLowerVolume>", lowerVolume 2 >>= alert)
-        , ("<XF86AudioMute>", toggleMuteChannels ["Master", "Speaker", "Bass Speaker"] >>= alertB)
+        , ("<XF86AudioMute>", toggleMuteChannels ["Master", "Headphone", "Speaker", "Bass Speaker"] >>= alertB)
         ]
