@@ -7,6 +7,12 @@ import System.IO
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.Script
 import qualified XMonad.StackSet as S
+import XMonad.Layout.IM
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.ResizableTile -- Actions.WindowNavigation is nice too
+import XMonad.Layout.NoBorders (smartBorders)
+import XMonad.Layout.Grid
+import XMonad.Layout.Named
 
 myManageHook = composeAll
    [ appName =? "outlook.office.com__owa" --> doShift "1:comm"
@@ -22,17 +28,22 @@ startupStuff = do
 
 startupStuff2 = setWMName "LG3D"
 
+myGrid = named "myGrid" $ Mirror(GridRatio (3/4))
+myLayouts = comm $ normal
+  where
+    normal = Tall 1 (3/100) (1/2) ||| Full ||| myGrid
+    comm = onWorkspace "1:comm" myGrid
+
 main = do
     xmproc <- spawnPipe "xmobar"
 
     xmonad $ defaultConfig
         { workspaces = ["1:comm","2","3","4","5","6","7","8","9","0","-","="]
         , manageHook = myManageHook <+> manageHook defaultConfig 
-        , layoutHook = avoidStruts(layoutHook defaultConfig)
+        , layoutHook = avoidStruts . smartBorders $ (myLayouts)
         , startupHook = startupStuff <+> startupStuff2
         , logHook = dynamicLogWithPP $ xmobarPP
                         { ppOutput = hPutStrLn xmproc
-                        -- , ppTitle = \s -> ""
                         , ppTitle = xmobarColor "green" "" . shorten 100
                         , ppOrder = reverse
                         }
