@@ -14,6 +14,8 @@ import XMonad.Layout.NoBorders (smartBorders)
 import XMonad.Layout.Grid
 import XMonad.Layout.Named
 import XMonad.Actions.WindowGo (runOrRaise)
+import XMonad.Actions.Volume
+import XMonad.Util.Dzen
 
 myManageHook = composeAll
    [ appName =? "outlook.office.com__owa" --> doShift "1:comm"
@@ -41,6 +43,19 @@ myLayouts = comm $ normal
     normal = Tall 1 (3/100) (1/2) ||| Full ||| myGrid
     comm = onWorkspace "1:comm" myGrid
 
+centered =
+        onCurr (center 150 66)
+    >=> font "-*-helvetica-*-r-*-*-64-*-*-*-*-*-*-*"
+    >=> addArgs ["-fg", "#80c0ff"]
+    >=> addArgs ["-bg", "#000040"]
+alert = dzenConfig centered . show . round
+
+muted :: Bool -> String
+muted True = "off"
+muted False = "on"
+
+alertB = dzenConfig centered . muted
+
 main = do
     xmproc <- spawnPipe "xmobar"
 
@@ -55,14 +70,20 @@ main = do
                         , ppOrder = reverse
                         }
         , modMask = mod4Mask     -- Rebind Mod to the Windows key
-        } `additionalKeys`
-          [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
-          , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
-          , ((0, xK_Print), spawn "scrot")
-          , ((mod4Mask, xK_0), (windows $ S.greedyView "0"))
-          , ((mod4Mask .|. shiftMask, xK_0), (windows $ S.shift "0"))
-          , ((mod4Mask, xK_minus), (windows $ S.greedyView "-"))
-          , ((mod4Mask .|. shiftMask, xK_minus), (windows $ S.shift "-"))
-          , ((mod4Mask, xK_equal), (windows $ S.greedyView "=:music"))
-          , ((mod4Mask .|. shiftMask, xK_equal), (windows $ S.shift "=:music"))
-          ]
+        } 
+        `additionalKeys`
+        [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
+        , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
+        , ((0, xK_Print), spawn "scrot")
+        , ((mod4Mask, xK_0), (windows $ S.greedyView "0"))
+        , ((mod4Mask .|. shiftMask, xK_0), (windows $ S.shift "0"))
+        , ((mod4Mask, xK_minus), (windows $ S.greedyView "-"))
+        , ((mod4Mask .|. shiftMask, xK_minus), (windows $ S.shift "-"))
+        , ((mod4Mask, xK_equal), (windows $ S.greedyView "=:music"))
+        , ((mod4Mask .|. shiftMask, xK_equal), (windows $ S.shift "=:music"))
+        ]
+        `additionalKeysP`
+        [ ("<XF86AudioRaiseVolume>", raiseVolume 2 >>= alert)
+        , ("<XF86AudioLowerVolume>", lowerVolume 2 >>= alert)
+        , ("<XF86AudioMute>", toggleMuteChannels ["Master", "Speaker", "Bass Speaker"] >>= alertB)
+        ]
