@@ -1,7 +1,7 @@
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
-import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.Run(spawnPipe, safeSpawnProg)
 import XMonad.Util.EZConfig
 import System.IO
 import XMonad.Hooks.SetWMName
@@ -13,18 +13,23 @@ import XMonad.Layout.ResizableTile -- Actions.WindowNavigation is nice too
 import XMonad.Layout.NoBorders (smartBorders)
 import XMonad.Layout.Grid
 import XMonad.Layout.Named
+import XMonad.Actions.WindowGo (runOrRaise)
 
 myManageHook = composeAll
    [ appName =? "outlook.office.com__owa" --> doShift "1:comm"
-   --, className =? "XDvi"      --> doShift "7:dvi"
-   --, className =? "Xmessage"  --> doFloat
+   , appName =? "bazaarvoice.hipchat.com__chat" --> doShift "1:comm"
+   , title =? "Signal" --> doShift "1:comm"
    , manageDocks
    ]
 
 startupStuff = do
     spawn "/usr/bin/feh --bg-scale ~/Downloads/nh-apluto-mountains-plains-9-17-15.png &"
     spawn "synclient PalmDetect=1 && synclient PalmMinz=255 && synclient HorizTwoFingerScroll=1 && synclient TapButton1=0"
-    spawn "xscreensaver &"
+    safeSpawnProg "xscreensaver"
+    runOrRaise "outlook-calendar" (title =? "Calendar - John.Roesler@bazaarvoice.com")
+    runOrRaise "outlook-mail" (title =? "Mail - John.Roesler@bazaarvoice.com")
+    runOrRaise "hipchat" (appName =? "bazaarvoice.hipchat.com__chat")
+    runOrRaise "signal" (title =? "Signal")
 
 startupStuff2 = setWMName "LG3D"
 
