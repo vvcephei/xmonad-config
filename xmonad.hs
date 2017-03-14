@@ -21,7 +21,7 @@ myManageHook = composeAll
    [ appName =? "outlook.office.com__owa" --> doShift "1:comm"
    , appName =? "bazaarvoice.hipchat.com__chat" --> doShift "1:comm"
    , title =? "Signal" --> doShift "1:comm"
-   , appName =? "spotify" --> doShift "=:music"
+   , appName =? "spotify" --> doShift "♫"
    , manageDocks
    ]
 
@@ -60,7 +60,7 @@ main = do
     xmproc <- spawnPipe "xmobar"
 
     xmonad $ defaultConfig
-        { workspaces = ["1:comm","2","3","4","5","6","7","8","9","0","-","=:music"]
+        { workspaces = ["1:comm","2","3","4","5","6","7","8","9","0","-","♫"]
         , manageHook = myManageHook <+> manageHook defaultConfig 
         , layoutHook = avoidStruts . smartBorders $ (myLayouts)
         , startupHook = startupStuff <+> startupStuff2
@@ -79,8 +79,8 @@ main = do
         , ((mod4Mask .|. shiftMask, xK_0), (windows $ S.shift "0"))
         , ((mod4Mask, xK_minus), (windows $ S.greedyView "-"))
         , ((mod4Mask .|. shiftMask, xK_minus), (windows $ S.shift "-"))
-        , ((mod4Mask, xK_equal), (windows $ S.greedyView "=:music"))
-        , ((mod4Mask .|. shiftMask, xK_equal), (windows $ S.shift "=:music"))
+        , ((mod4Mask, xK_equal), (windows $ S.greedyView "♫"))
+        , ((mod4Mask .|. shiftMask, xK_equal), (windows $ S.shift "♫"))
         ]
         `additionalKeysP`
         [ ("<XF86AudioRaiseVolume>", raiseVolume 2 >>= alert)
