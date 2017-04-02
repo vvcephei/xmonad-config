@@ -1,4 +1,4 @@
-Config { font = "-misc-fixed-*-*-*-*-20-*-*-*-*-*-*-*"
+Config { font = "monospace:size=12"
        , additionalFonts = []
        , borderColor = "black"
        , border = TopB
