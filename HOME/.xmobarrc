@@ -15,21 +15,15 @@ Config { font = "-misc-fixed-*-*-*-*-20-*-*-*-*-*-*-*"
        , iconRoot = "."
        , allDesktops = True
        , overrideRedirect = False
-       , commands = [ Run Network "eth0" ["-L","0","-H","32",
-                                          "--normal","green","--high","red"] 10
-                    , Run Network "wlp4s0" ["-L","0","-H","32", "--template","wifi: <rx>KB|<tx>KB", 
-                                          "--normal","green","--high","red"] 10
-                    , Run Wireless "wlp4s0" ["-L","0","-H","32", "--template","<essid>",
-                                          "--normal","green","--high","red"] 10
-                    , Run Network "enp0s20u2" ["-L","0","-H","32",
-                                          "--normal","green","--high","red"] 10
-                    , Run Network "tun0" ["-L","0","-H","32",
-                                          "--normal","green","--high","red"] 10
-                    , Run Cpu ["-L","3","-H","50",
-                               "--normal","green","--high","red"] 10
+       , commands = [ Run Network "eth0" ["-L","0","-H","32", "--normal","green","--high","red"] 10
+                    , Run Network "wlp4s0" ["-L","0","-H","32", "--template","<rx>KB|<tx>KB", "--normal","green","--high","red"] 10
+                    , Run Wireless "wlp4s0" ["-L","0","-H","32", "--template","<essid> <quality>", "--normal","green","--high","red"] 10
+                    , Run Network "enp0s20u2" ["-L","0","-H","32", "--normal","green","--high","red"] 10
+                    , Run Network "tun0" ["-L","0","-H","32", "--normal","green","--high","red"] 10
+                    , Run Cpu ["-L","0","-H","50", "--normal","green","--high","red"] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
-                    , Run Battery        [ "--template" , "Batt: <acstatus>"
+                    , Run Battery        [ "--template" , "<acstatus>"
                              , "--Low"      , "10"        -- units: %
                              , "--High"     , "80"        -- units: %
                              , "--low"      , "darkred"
@@ -44,14 +38,11 @@ Config { font = "-misc-fixed-*-*-*-*-20-*-*-*-*-*-*-*"
                                        -- charged status
                                        , "-i"	, "<fc=#006000>Charged</fc>"
                              ] 50
-                    , Run Com "uname" ["-s","-r"] "" 36000
                     , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run Com "date" ["--utc", "+%Y-%m-%dT%H:%M:%SZ"] "utc" 10
                     , Run StdinReader
-                    , Run Uptime ["-t", "Up: <days>d,<hours>:<minutes>"] 10
                     ]
        , sepChar = "%"
-       , alignSep = "}{"
-       , template = "%battery% | %cpu% | %memory% * %swap% | %eth0% - %enp0s20u2% - %wlp4s0% %wlp4s0wi% - %tun0% }\
-                    \{ | %StdinReader% | <fc=#ee9a00>%date%</fc> | <fc=#de008a>%utc%</fc>"
+       , alignSep = "<>"
+       , template = "%battery% | %cpu% | %memory% * %swap% | %eth0% - %enp0s20u2% - %wlp4s0% %wlp4s0wi% - %tun0% <> | %StdinReader% | <fc=#ee9a00>%date%</fc> | <fc=#de008a>%utc%</fc>"
        }
