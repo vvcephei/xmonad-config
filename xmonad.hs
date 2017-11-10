@@ -15,25 +15,28 @@ import XMonad.Layout.Grid
 import XMonad.Layout.Named
 import XMonad.Actions.WindowGo (runOrRaise)
 import XMonad.Actions.Volume
+import XMonad.Actions.UpdatePointer
 import XMonad.Util.Dzen
 
 myManageHook = composeAll
    [ appName =? "outlook.office.com__owa" --> doShift "1:comm"
-   , appName =? "bazaarvoice.hipchat.com__chat" --> doShift "1:comm"
+   , appName =? "mail.protonmail.com__inbox" --> doShift "1:comm"
+   , appName =? "HipChat" --> doShift "1:comm"
    , title =? "Signal" --> doShift "1:comm"
    , appName =? "spotify" --> doShift "="
    , manageDocks
    ]
 
 startupStuff = do
-    spawn "/usr/bin/feh --bg-scale ~/Downloads/nh-apluto-mountains-plains-9-17-15.png &"
+    --spawn "/usr/bin/feh --bg-scale ~/Downloads/nh-apluto-mountains-plains-9-17-15.png &"
     spawn "synclient PalmDetect=1 && synclient PalmMinz=255 && synclient HorizTwoFingerScroll=1 && synclient TapButton1=0"
     safeSpawnProg "xscreensaver"
     runOrRaise "outlook-calendar" (title =? "Calendar - John.Roesler@bazaarvoice.com")
     runOrRaise "outlook-mail" (title =? "Mail - John.Roesler@bazaarvoice.com")
-    runOrRaise "hipchat" (appName =? "bazaarvoice.hipchat.com__chat")
+    runOrRaise "hipchat4" (appName =? "HipChat")
+    runOrRaise "protonmail" (appName =? "mail.protonmail.com__inbox")
     runOrRaise "signal" (title =? "Signal")
-    runOrRaise "spotify" (appName =? "spotify")
+    --runOrRaise "spotify" (appName =? "spotify")
 
 startupStuff2 = setWMName "LG3D"
 
@@ -61,18 +64,20 @@ main = do
 
     xmonad $ defaultConfig
         { workspaces = ["1:comm","2","3","4","5","6","7","8","9","0","-","="]
+        , terminal = "gnome-terminal"
         , manageHook = myManageHook <+> manageHook defaultConfig 
         , layoutHook = avoidStruts . smartBorders $ (myLayouts)
         , startupHook = startupStuff <+> startupStuff2
-        , logHook = dynamicLogWithPP $ xmobarPP
+        , logHook = dynamicLogWithPP xmobarPP
                         { ppOutput = hPutStrLn xmproc
                         , ppTitle = xmobarColor "green" "" . shorten 100
                         , ppOrder = reverse
                         }
+                        >> updatePointer (0.5,0.5) (0.5,0.5)
         , modMask = mod4Mask     -- Rebind Mod to the Windows/Apple key
         } 
         `additionalKeys`
-        [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
+        [ ((mod4Mask .|. shiftMask, xK_z), spawn "qdbus org.gnome.ScreenSaver /ScreenSaver Lock")
         , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
         , ((0, xK_Print), spawn "scrot")
         , ((mod4Mask, xK_0), (windows $ S.greedyView "0"))

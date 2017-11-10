@@ -15,10 +15,15 @@ Config { font = "monospace:size=12"
        , iconRoot = "."
        , allDesktops = True
        , overrideRedirect = False
-       , commands = [ Run Network "eth0" ["-L","0","-H","32", "--normal","green","--high","red"] 10
-                    , Run Network "wlp4s0" ["-L","0","-H","32", "--template","<rx>KB|<tx>KB", "--normal","green","--high","red"] 10
-                    , Run Wireless "wlp4s0" ["-L","0","-H","32", "--template","<essid> <quality>", "--normal","green","--high","red"] 10
-                    , Run Network "enp0s20u2" ["-L","0","-H","32", "--normal","green","--high","red"] 10
+       , commands = [ 
+                    -- network activity monitor (dynamic interface resolution)
+                    Run DynNetwork     [ "--template" , "<dev>: <tx>kB/s|<rx>kB/s"
+                         , "--Low"      , "1000"       -- units: B/s
+                         , "--High"     , "5000"       -- units: B/s
+                         , "--low"      , "darkgreen"
+                         , "--normal"   , "darkorange"
+                         , "--high"     , "darkred"
+                         ] 10
                     , Run Network "tun0" ["-L","0","-H","32", "--normal","green","--high","red"] 10
                     , Run Cpu ["-L","0","-H","50", "--normal","green","--high","red"] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
@@ -34,9 +39,9 @@ Config { font = "monospace:size=12"
                                        -- discharging status
                                        , "-o"	, "<left>% (<timeleft>)"
                                        -- AC "on" status
-                                       , "-O"	, "<fc=#dAA520>Charging</fc>"
+                                       , "-O"	, "<fc=#dAA520>Charging (<left>% <timeleft>)</fc>"
                                        -- charged status
-                                       , "-i"	, "<fc=#006000>Charged</fc>"
+                                       , "-i"	, "<fc=#006000>Charged (<left>%)</fc>"
                              ] 50
                     , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run Com "date" ["--utc", "+%Y-%m-%dT%H:%M:%SZ"] "utc" 10
@@ -44,5 +49,5 @@ Config { font = "monospace:size=12"
                     ]
        , sepChar = "%"
        , alignSep = "<>"
-       , template = "%battery% | %cpu% | %memory% * %swap% | %eth0% - %enp0s20u2% - %wlp4s0% %wlp4s0wi% - %tun0% <> | %StdinReader% | <fc=#ee9a00>%date%</fc> | <fc=#de008a>%utc%</fc>"
+       , template = "%battery% | %cpu% | %memory% * %swap% | %dynnetwork% - %tun0% <> | %StdinReader% | <fc=#ee9a00>%date%</fc> | <fc=#de008a>%utc%</fc>"
        }
